@@ -9,7 +9,7 @@ source "security/keys/Kconfig"
 
 config SECURITY_DMESG_RESTRICT
 	bool "Restrict unprivileged access to the kernel syslog"
-	default n
+	default y
 	help
 	  This enforces restrictions on unprivileged users reading the kernel
 	  syslog via dmesg(8).
@@ -18,6 +18,15 @@ config SECURITY_DMESG_RESTRICT
 	  unless the dmesg_restrict sysctl is explicitly set to (1).
 
 	  If you are unsure how to answer this question, answer N.
+
+config SECURITY_PERF_EVENTS_RESTRICT
+	bool "Restrict unprivileged use of performance events"
+	depends on PERF_EVENTS
+	help
+	  If you say Y here, the kernel.perf_event_paranoid sysctl
+	  will be set to 3 by default, and no unprivileged use of the
+	  perf_event_open syscall will be permitted unless it is
+	  changed.
 
 config SECURITY
 	bool "Enable different security models"
@@ -154,6 +163,7 @@ config HARDENED_USERCOPY
 	bool "Harden memory copies between kernel and userspace"
 	depends on HAVE_HARDENED_USERCOPY_ALLOCATOR
 	imply STRICT_DEVMEM
+	default y
 	help
 	  This option checks for obviously wrong memory regions when
 	  copying memory to/from the kernel (via copy_to_user() and
@@ -166,7 +176,6 @@ config HARDENED_USERCOPY
 config HARDENED_USERCOPY_FALLBACK
 	bool "Allow usercopy whitelist violations to fallback to object size"
 	depends on HARDENED_USERCOPY
-	default y
 	help
 	  This is a temporary option that allows missing usercopy whitelists
 	  to be discovered via a WARN() to the kernel log, instead of
@@ -194,6 +203,17 @@ config FORTIFY_SOURCE
 	help
 	  Detect overflows of buffers in common string and memory functions
 	  where the compiler can determine and validate the buffer sizes.
+
+config FORTIFY_SOURCE_STRICT_STRING
+	bool "Harden common functions against buffer overflows"
+	depends on FORTIFY_SOURCE
+	depends on EXPERT
+	help
+	  Perform stricter overflow checks catching overflows within objects
+	  for common C string functions rather than only between objects.
+
+	  This is not yet intended for production use, only bug finding.
+
 
 config STATIC_USERMODEHELPER
 	bool "Force all usermode helper calls through a single binary"
