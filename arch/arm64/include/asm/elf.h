@@ -164,8 +164,8 @@ extern int arch_setup_additional_pages(struct linux_binprm *bprm,
 /* 1GB of VA */
 #ifdef CONFIG_COMPAT
 #define STACK_RND_MASK			(test_thread_flag(TIF_32BIT) ? \
-						((1UL << mmap_rnd_compat_bits) - 1) >> (PAGE_SHIFT - 12) : \
-						((1UL << mmap_rnd_bits) - 1) >> (PAGE_SHIFT - 12))
+						0x7ff >> (PAGE_SHIFT - 12) : \
+						0x3ffff >> (PAGE_SHIFT - 12))
 #else
 #define STACK_RND_MASK			(0x3ffff >> (PAGE_SHIFT - 12))
 #endif
@@ -173,7 +173,7 @@ extern int arch_setup_additional_pages(struct linux_binprm *bprm,
 #ifdef __AARCH64EB__
 #define COMPAT_ELF_PLATFORM		("v8b")
 #else
-#define STACK_RND_MASK			(((1UL << mmap_rnd_bits) - 1) >> (PAGE_SHIFT - 12))
+#define COMPAT_ELF_PLATFORM		("v8l")
 #endif
 
 #ifdef CONFIG_COMPAT
