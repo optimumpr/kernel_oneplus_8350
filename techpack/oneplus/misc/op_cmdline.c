@@ -362,8 +362,6 @@ static int __init op_cmdline_init(void)
 {
 	pr_info("%s:%s\n", __func__, op_cmdline);
 
-	strcpy(op_cmdline, saved_command_line);
-
 	boot_mode_init(CMDLINE_BOOT_MODE);
 	boot_mode_init_normal();
 	get_oem_project_init(CMDLINE_PRJ_CODENAME);
